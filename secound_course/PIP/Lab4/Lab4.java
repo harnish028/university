@@ -16,12 +16,11 @@ import static javax.swing.SwingUtilities.invokeLater;
 public class Lab4 extends JFrame {
     private static final int FRAME_HEIGHT = 580;
     private static final int FRAME_WIDTH = 500;
-
     int R = 10;
-    Form startForm = new Form(R);
-    private List<Dot> puntos = new ArrayList<>();
-    private List<Dot> targets = new ArrayList<>();
     Dot mainDot = new Dot(0, 0);
+    Form startForm = new Form(R);
+    private List<Dot> dotsList = new ArrayList<>();
+    private List<Dot> dotsInTarget = new ArrayList<>();
 
     private JPanel dataPanel;
     private JPanel xListPanel;
@@ -31,7 +30,6 @@ public class Lab4 extends JFrame {
 
     private JTextArea nowDot;
     private JList<String> xList;
-
     private JLabel yLabel;
     private JRadioButton y0;
     private JRadioButton y1;
@@ -81,7 +79,7 @@ public class Lab4 extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 repaint();
-                puntos.clear();
+                dotsList.clear();
             }
         };
 
@@ -92,18 +90,19 @@ public class Lab4 extends JFrame {
     public void addDrawButton() {
         drawButton = new JButton("DRAW");
         ActionListener actionListener = e -> {
-           // drawPanel.paint(drawPanel.getGraphics());
-            puntos.add(mainDot);
+            drawPanel.paint(drawPanel.getGraphics());
+            dotsList.add(mainDot);
             nowDot.setText(mainDot.toString());
+            drawPanel.startAnimation(drawPanel.getGraphics(), dotsList, R);
             if(startForm.isContain(mainDot)) {
-                targets.add(mainDot);
+                dotsInTarget.add(mainDot);
 //                DotAnimation nextDot = new DotAnimation(drawPanel.getGraphics(), drawPanel, mainDot);
 //                Thread animationThread = new Thread(nextDot);
 //                animationThread.start();
-                drawPanel.startAnimation(drawPanel.getGraphics());
+                drawPanel.startAnimation(drawPanel.getGraphics(), dotsList, R);
             }
-            showDots(drawPanel.getGraphics(), puntos, startForm, R);
-            showDots(drawPanel.getGraphics(), targets, startForm, R);
+            showDots(drawPanel.getGraphics(), dotsList, startForm, R);
+            showDots(drawPanel.getGraphics(), dotsInTarget, startForm, R);
         };
 
         buttonPanel.add(drawButton);
@@ -137,16 +136,16 @@ public class Lab4 extends JFrame {
                 drawPanel.paint(drawPanel.getGraphics());
                 R = ((JSlider)e.getSource()).getValue();
                 startForm = new Form(R);
-                for(Dot dots:puntos) {
+                for(Dot dots: dotsList) {
                     if(startForm.isContain(dots)) {
 //                        DotAnimation nextDot = new DotAnimation(drawPanel.getGraphics(), drawPanel, dots);
 //                        Thread animationThread = new Thread(nextDot);
 //                        animationThread.start();
-                        drawPanel.startAnimation(drawPanel.getGraphics());
+                        drawPanel.startAnimation(drawPanel.getGraphics(), dotsList, R);
                         break;
                     }
                 }
-                showDots(drawPanel.getGraphics(), puntos, startForm, R);
+                showDots(drawPanel.getGraphics(), dotsList, startForm, R);
             }
         };
 
@@ -264,9 +263,9 @@ public class Lab4 extends JFrame {
             startForm.setR(R);
             g = ((DrawPanel) e.getSource()).getGraphics();
             Dot dots = new Dot(toDecartX(e.getX(), R), toDecartY(e.getY(), R));
-            if(!puntos.contains(dots)) {
-                puntos.add(dots);
-                showDots(g, puntos, startForm, R);
+            if(!dotsList.contains(dots)) {
+                dotsList.add(dots);
+                showDots(g, dotsList, startForm, R);
                 nowDot.setText(dots.toString());
             }
         }
