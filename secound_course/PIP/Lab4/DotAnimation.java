@@ -4,32 +4,43 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DotAnimation implements Runnable {
-
+    public  final Color COLOR_BLACK = new Color(0, 0, 0);
     Graphics g;
     DrawPanel drawPanel;
-    Form form;
     Dot dot;
-    int radius;
 
-    public DotAnimation(Graphics g, Form form, Dot dot, int radius){
+    public DotAnimation(Graphics g, DrawPanel drawPanel, Dot dot){
         this.g = g;
-        this.radius = radius;
+        this.drawPanel = drawPanel;
         this.dot = dot;
-        this.form = form;
-        System.out.println("JOPA");
+        System.out.println("POSHEL");
     }
     @Override
     public void run() {
-        if(form.isContain(dot)) {
-            System.out.println("POPAL");
-            g.setColor(Color.BLACK);
-            g.fillOval((int)dot.getX() + 200, (int)dot.getY() + 200, (int) (radius / 20), (int) (radius / 20));
-        } else {
-            System.out.println("ne popal");
-        }
-
         try {
-            Thread.sleep(200);
+            int main_red = COLOR_BLACK.getRed();
+            int main_green = COLOR_BLACK.getGreen();
+            int main_blue = COLOR_BLACK.getBlue();
+
+            int RED = main_red;
+            int GREEN = main_green;
+            int BLUE = main_blue;
+            int N = 50;
+
+            for (int i = 0; i < N; i++) {
+                RED += (255 - main_red) / N;
+                GREEN += (255 - main_green) / N;
+                drawPanel.drawArea(g, new Color(RED, GREEN, BLUE));
+                Thread.sleep(1000 / 50);
+                //drawPanel.repaint();
+            }
+            for (int i = 0; i < N; i++) {
+                RED -= (255 - main_red) / N;
+                GREEN -= (255 - main_green) / N;
+                drawPanel.drawArea(g, new Color(RED, GREEN, BLUE));
+                Thread.sleep(1000 / 50);
+               // drawPanel.repaint();
+            }
         } catch (InterruptedException ex) {
             Logger.getLogger(DotAnimation.class.getName()).log(Level.SEVERE, null, ex);
         }
