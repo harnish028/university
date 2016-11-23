@@ -17,7 +17,7 @@ public class DrawPanel extends JPanel {
     public static final int POINT_RADIUS = 5;
     public static final int MARGIN = 9;
     public List<Dot> dots = new ArrayList<>();
-    public Form form = new Form(10);
+    public Form form ;
     int r;
 
     public DrawPanel() {
@@ -37,7 +37,11 @@ public class DrawPanel extends JPanel {
         drawCoordinate(g, h, w);
         drawHatching(g, h, w);
         drawArea(g, areaColor);
-        showDots(g, dots, form, r);
+//        showDots(g, dots, form, r);
+        for(Dot point : dots) {
+            g.setColor(form.isContain(point) ? Color.GREEN : Color.RED);
+            g.fillOval((int) point.toPixelsX(r) - 2, (int) point.toPixelsY(r) - 2, DrawPanel.POINT_RADIUS, DrawPanel.POINT_RADIUS);
+        }
     }
 
     public void drawArea(Graphics g, Color color) {
@@ -116,7 +120,7 @@ public class DrawPanel extends JPanel {
         }
     }
 
-    public void startAnimation(Graphics g) {
+    public void startAnimation(Graphics g, List<Dot> dot, int radius) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -129,29 +133,27 @@ public class DrawPanel extends JPanel {
                     int GREEN = main_green;
                     int BLUE = main_blue;
                     int N = 50;
-
+                    dots.addAll(dot);
+                    r = radius;
+                    form = new Form(radius);
                     for (int i = 0; i < N; i++) {
                         RED += (255 - main_red) / N;
                         GREEN += (255 - main_green) / N;
                         areaColor = new Color(RED, GREEN, BLUE);
                         repaint();
-                        // drawArea(g, new Color(RED, GREEN, BLUE));
                         Thread.sleep(1000 / 50);
-                        //drawPanel.repaint();
                     }
                     for (int i = 0; i < N; i++) {
                         RED -= (255 - main_red) / N;
                         GREEN -= (255 - main_green) / N;
                         areaColor = new Color(RED, GREEN, BLUE);
                         repaint();
-//                        drawArea(g, new Color(RED, GREEN, BLUE));
                         Thread.sleep(1000 / 50);
-                        // drawPanel.repaint();
                     }
                 } catch (InterruptedException ex) {
                     Logger.getLogger(DotAnimation.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        });
+        }).start();
     }
 }
