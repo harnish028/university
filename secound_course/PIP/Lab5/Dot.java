@@ -2,7 +2,7 @@ public class Dot {
 
     private double x;
     private double y;
-
+    private boolean hit;
     public Dot(double x, double y) {
         this.x = x;
         this.y = y;
@@ -14,6 +14,14 @@ public class Dot {
 
     public void setX(int x) {
         this.x = x;
+    }
+
+    public boolean getHit(){
+        return hit;
+    }
+
+    public void setHit(boolean hit){
+        this.hit = hit;
     }
 
     public double getY() { return y; }
@@ -28,9 +36,9 @@ public class Dot {
 
     @Override
     public String toString() {
-        return "com.pip.lab5client.Dot{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
+        return new StringBuilder()
+                .append("{ x=").append(x)
+                .append(", y=").append(y).append("}")
+                .toString();
     }
 }
